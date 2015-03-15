@@ -104,11 +104,29 @@ filled<-dat
 filled$steps<-na.locf(filled$steps,fromLast = T,na.rm = F)
 ```
 
-Histogram of the new data by day:
+Histogram of the new data by day. Please note the abundance of 0 days this time is that the NA days from before are now filled in with zeroes.
 
 ```{r}
 fday<-aggregate(steps ~ timestamp, data=filled,FUN=sum,na.action=NULL)
-hist(fday$steps,breaks=10,xlab = "Steps Taken per day",main="Steps Taken Per Day")
+hist(fday$steps,breaks=10,xlab = "Steps",main="Steps Taken Per Day")
 ```
 
+...and compare the fday mean and median to the unfilled (mday) data. We clearly see the addition of so many zeroes brings down the descriptive qualities of the data.
+
+```{r compare-fills,results="asis"}
+umean<-mean(mday$steps[complete.cases(mday$steps)])
+umed<-median(mday$steps[complete.cases(mday$steps)])
+
+fmean<-mean(fday$steps[complete.cases(fday$steps)])
+fmed<-median(fday$steps[complete.cases(fday$steps)])
+
+
+sprintf("unfilled mean : filled mean     -- %.2f : %.2f",umean,fmean)
+sprintf("unfilled median : filled median -- %.2f : %.2f",umed,fmed)
+```
+
+
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+

@@ -18,7 +18,7 @@ dat<-read.csv("activity.csv",stringsAsFactors=F)
 We see a sum of steps for each five minute slice of each day over the timeframe Oct 1, 2012 to Nov 30, 2012.
 
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Sun Mar 15 15:30:35 2015 -->
+<!-- Sun Mar 15 15:44:54 2015 -->
 <table border=1>
 <tr> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
   <tr> <td align="right">   0 </td> <td> 2012-10-04 </td> <td align="right"> 1115 </td> </tr>
@@ -165,14 +165,37 @@ filled<-dat
 filled$steps<-na.locf(filled$steps,fromLast = T,na.rm = F)
 ```
 
-Histogram of the new data by day:
+Histogram of the new data by day. Please note the abundance of 0 days this time is that the NA days from before are now filled in with zeroes.
 
 
 ```r
 fday<-aggregate(steps ~ timestamp, data=filled,FUN=sum,na.action=NULL)
-hist(fday$steps,breaks=10,xlab = "Steps Taken per day",main="Steps Taken Per Day")
+hist(fday$steps,breaks=10,xlab = "Steps",main="Steps Taken Per Day")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+
+...and compare the fday mean and median to the unfilled (mday) data.
+
+
+```r
+umean<-mean(mday$steps[complete.cases(mday$steps)])
+umed<-median(mday$steps[complete.cases(mday$steps)])
+
+fmean<-mean(fday$steps[complete.cases(fday$steps)])
+fmed<-median(fday$steps[complete.cases(fday$steps)])
+
+
+sprintf("unfilled mean : filled mean     -- %.2f : %.2f",umean,fmean)
+```
+
+[1] "unfilled mean : filled mean     -- 10766.19 : 9510.13"
+
+```r
+sprintf("unfilled median : filled median -- %.2f : %.2f",umed,fmed)
+```
+
+[1] "unfilled median : filled median -- 10765.00 : 10417.00"
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
