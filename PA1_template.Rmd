@@ -102,6 +102,7 @@ We do a simple fill backward of missing values. In the case we have missing valu
 library(zoo)
 filled<-dat
 filled$steps<-na.locf(filled$steps,fromLast = T,na.rm = F)
+filled$steps<-na.locf(filled$steps,na.rm = F)
 ```
 
 Histogram of the new data by day. Please note the abundance of 0 days this time is that the NA days from before are now filled in with zeroes.
@@ -111,7 +112,7 @@ fday<-aggregate(steps ~ timestamp, data=filled,FUN=sum,na.action=NULL)
 hist(fday$steps,breaks=10,xlab = "Steps",main="Steps Taken Per Day")
 ```
 
-...and compare the fday mean and median to the unfilled (mday) data. We clearly see the addition of so many zeroes brings down the descriptive qualities of the data.
+...and compare the fday mean and median to the unfilled (mday) data. We clearly see the "filling" of so many zeroes brings down the descriptive qualities of the data.
 
 ```{r compare-fills,results="asis"}
 umean<-mean(mday$steps[complete.cases(mday$steps)])
@@ -127,6 +128,34 @@ sprintf("unfilled median : filled median -- %.2f : %.2f",umed,fmed)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Create a new variable, weekday or weekend based on the date. We'll use the filled data for this one.
+
+We need a new discriminating factor we'll call wewd (weekend/weekday).
+
+```{r}
+filled$dow<-weekdays(fday$timestamp)
+filled$wewd[filled$dow %in% c("Saturday","Sunday")]<-"Weekend"
+filled$wewd[filled$dow %in% c("Monday","Tuesday","Wednesday","Thursday","Friday")]<-"Weekday"
+```
+
+We then aggregate the steps across the 5-min interval and we/wd factor.
+```{r}
+fs<-aggregate(
+    steps ~ interval + wewd,
+    data=filled,
+    FUN=mean
+    )
+```
+
+...and plot.
+
+```{r}
+library(lattice)
+xyplot(steps ~ interval | wewd, data=fs, layout=c(1,2),type = 'l')
+```
+
+
 
 
 
