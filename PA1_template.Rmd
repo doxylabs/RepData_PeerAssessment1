@@ -96,7 +96,10 @@ ms[ms$steps==max(ms$steps),"interval"]
 sprintf("five-minute intervals missing (NA) steps: %d out of %d",nrow(dat[is.na(dat$steps),]),nrow(dat))
 ```
 
-We do a simple fill backward of missing values. In the case we have missing values at the beginning of the dataset (like we do), it's best to fill backward (fromLast). We create a new filled set with dat and then our steps are filled in.
+### Fill Strategy
+
+We do a simple fill backward of missing values. In the case we have missing values at the beginning of the dataset (like we do), it's best to fill backward (fromLast). We create a new filled set with dat and then our steps are filled in. filling forwards after that completes the data fill.
+
 
 ```{r}
 library(zoo)
@@ -152,7 +155,7 @@ fs<-aggregate(
 
 ```{r}
 library(lattice)
-xyplot(steps ~ interval | wewd, data=fs, layout=c(1,2),type = 'l')
+xyplot(steps ~ interval | wewd, data=fs, layout=c(1,2),type = 'l',main = "Average steps taken (Weekends vs. Weekdays)")
 ```
 
 

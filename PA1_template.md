@@ -18,7 +18,7 @@ dat<-read.csv("activity.csv",stringsAsFactors=F)
 We see a sum of steps for each five minute slice of each day over the timeframe Oct 1, 2012 to Nov 30, 2012.
 
 <!-- html table generated in R 3.1.2 by xtable 1.7-4 package -->
-<!-- Sun Mar 15 16:09:49 2015 -->
+<!-- Sun Mar 15 16:22:39 2015 -->
 <table border=1>
 <tr> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
   <tr> <td align="right">   0 </td> <td> 2012-10-04 </td> <td align="right"> 1115 </td> </tr>
@@ -144,7 +144,10 @@ sprintf("five-minute intervals missing (NA) steps: %d out of %d",nrow(dat[is.na(
 ## [1] "five-minute intervals missing (NA) steps: 2304 out of 17568"
 ```
 
-We do a simple fill backward of missing values. In the case we have missing values at the beginning of the dataset (like we do), it's best to fill backward (fromLast). We create a new filled set with dat and then our steps are filled in.
+### Fill Strategy
+
+We do a simple fill backward of missing values. In the case we have missing values at the beginning of the dataset (like we do), it's best to fill backward (fromLast). We create a new filled set with dat and then our steps are filled in. filling forwards after that completes the data fill.
+
 
 
 ```r
@@ -227,7 +230,7 @@ fs<-aggregate(
 
 ```r
 library(lattice)
-xyplot(steps ~ interval | wewd, data=fs, layout=c(1,2),type = 'l')
+xyplot(steps ~ interval | wewd, data=fs, layout=c(1,2),type = 'l',main = "Average steps taken (Weekends vs. Weekdays)")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
